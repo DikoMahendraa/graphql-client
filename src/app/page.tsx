@@ -1,7 +1,6 @@
 "use client"
 
-import { client } from '@/services/graphql-env';
-import { ApolloProvider, useQuery, gql } from '@apollo/client';
+import { useQuery, gql } from '@apollo/client';
 import { useRouter } from 'next/navigation';
 
 const GET_USERS = gql`
@@ -44,20 +43,20 @@ const Users = () => {
       {data.users.map((user: {name: string, email: string, id: string}) => (
         <li className='flex items-center' key={user.id}>
           <div className='flex flex-col'>
-            <p>Name: {user.name}</p>
+            <p><b>Name</b>: {user.name}</p>
 
-             <p>Email: {user?.email}</p>
+             <p><b>Email</b>: {user?.email}</p>
           </div>
 
           <div className='ml-6'>
             <button onClick={() =>
               onHandleDetailUser(user.id)
-            } className='bg-green-500 border-white border px-4'>
+            } className='bg-green-500 border-black text-white border px-4'>
               detail
             </button>
             <button onClick={() =>
             onHandleDetailUser(user.id)
-            } className='bg-red-500 border-white border ml-2 px-4'>
+            } className='bg-red-500 border-black text-white border ml-2 px-4'>
               remove
             </button>
           </div>
@@ -67,15 +66,13 @@ const Users = () => {
   );
 };
 
-const App = () => (
-  <ApolloProvider client={client}>
+const App = () => (  
     <div className='flex flex-col justify-center h-screen items-center'>
       <h1 className='text-red-600 text-3xl font-semibold mb-2 underline'>GraphQL Users</h1>
 
     
       <Users />
     </div>
-  </ApolloProvider>
 );
 
 export default App;
