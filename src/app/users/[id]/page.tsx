@@ -15,7 +15,6 @@ const GET_USER_DETAIL = gql`
   }
 `;
 
-
 export default function DetailUser() {
   const pathName = useParams()
   const router = useRouter()

@@ -34,11 +34,19 @@ const Users = () => {
     router.push(`/users/${id}`)
   }
 
+  const onHandleCreateUser = () => router.push("/users/create")
+
   return (
     <ul className='list-disc space-y-4'>
-      <p className='text-blue-500 font-semibold my-4'>
-        List Users :
-      </p>
+      <div className='flex items-center justify-between'>
+        <p className='text-blue-500 font-semibold my-4'>
+          List Users :
+        </p>
+
+        <button onClick={onHandleCreateUser} className='bg-blue-400 text-white uppercase px-4 py-1 border border-black'>
+            create user
+        </button>
+      </div>
 
       {data.users.map((user: {name: string, email: string, id: string}) => (
         <li className='flex items-center' key={user.id}>
