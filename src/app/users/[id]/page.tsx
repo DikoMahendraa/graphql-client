@@ -22,7 +22,8 @@ export default function DetailUser() {
   const userId = pathName?.id as string
 
   const { loading, error, data } = useQuery(GET_USER_DETAIL, {
-    variables: { id: Number(userId) | 0 }
+    variables: { id: Number(userId) | 0 },
+    fetchPolicy: "no-cache"
   });
   
   const onHandleBack = () => router.back()
@@ -45,10 +46,11 @@ export default function DetailUser() {
             </div>
           ) : (
             <ul className='mt-6 list-disc'>
-              <li>name: {data.user.name ?? "-"}</li>
-              <li>email: {data.user.email ?? "-"}</li>
-              <li>address: {data.user.address ?? "-"}</li>
-              <li>phone: {data.user.phone ?? "-"}</li>
+              <li><span className='font-semibold'>name:</span> {data.user.name ?? "-"}</li>
+              <li><span className='font-semibold'>email:</span> {data.user.email ?? "-"}</li>
+              <li><span className='font-semibold'>address:</span> {data.user.address ?? "-"}</li>
+              <li><span className='font-semibold'>phone:</span> {data.user.phone ?? "-"}</li>
+              <li><span className='font-semibold'>religion:</span> {data.user.religion ?? "-"}</li>
             </ul>
           )
         }

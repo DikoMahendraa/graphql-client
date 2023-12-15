@@ -1,31 +1,67 @@
 "use client"
+
+import { gql, useMutation } from '@apollo/client';
 import { useRouter } from 'next/navigation'
 import { FormEvent } from 'react'
+
+
+export const DELETE_USER_MUTATION = gql`
+mutation AddUser(
+  $name: String,
+  $email: String,
+  $religion: String!,
+  $address: String,
+  $phone: String
+) {
+addUser(
+  name: $name,
+  email: $email,
+  address: $address,
+  religion: $religion,
+  phone:$phone
+) {
+  id
+  name
+  email
+  address
+  religion
+  phone
+}
+}
+`;
+
 
 export default function PageCreateUser() {
 
   const router = useRouter()
   const onHandleBack = () => router.back()
+  const [addUser] = useMutation(DELETE_USER_MUTATION)
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     
     const name = (event.target as HTMLFormElement).username.value;
     const email = (event.target as HTMLFormElement).email.value;
     const address = (event.target as HTMLFormElement).address.value;
     const religion = (event.target as HTMLFormElement).religion.value;
-    const gender = (event.target as HTMLFormElement).gender.value;
     const phone = (event.target as HTMLFormElement).phone.value;
 
 
-    console.log({ name, email, address, religion, gender, phone })
+    try {
+      return await addUser({variables: {
+        name, email, address, religion, phone
+      }})
+    } catch (error) {
+      alert("Ups something went wrong")
+    }
+    
   }
 
   return (
     <div className='w-full flex flex-col justify-center h-screen items-center'>
     <div className='w-[30rem] overflow-hidden'>
       <div className='mb-8'>
-      <button className='px-4 border-black bg-red-500 text-white border capitalize' onClick={onHandleBack}>back</button>
+      <button className='px-4 border-black bg-red-500 text-white border capitalize' onClick={onHandleBack}>{`< `}back</button>
       </div>
       <div className='w-full text-center'>
         <p className='text-center uppercase underline font-semibold'>
@@ -52,10 +88,6 @@ export default function PageCreateUser() {
               <div className='text-left'>
                 <label htmlFor="">Religion</label>
                 <input type="text" name='religion' className='border-gray-500 p-2 w-full outline-none border' placeholder='enter religion' />
-              </div>
-              <div className='text-left'>
-                <label htmlFor="">Gender</label>
-                <input type="text" name='gender' className='border-gray-500 p-2 w-full outline-none border' placeholder='enter gender' />
               </div>
               <div className='text-left'>
                 <label htmlFor="">Phone</label>
