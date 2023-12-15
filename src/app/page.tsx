@@ -1,6 +1,6 @@
 "use client"
 
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, gql, useMutation } from '@apollo/client';
 import { useRouter } from 'next/navigation';
 
 const GET_USERS = gql`
@@ -13,19 +13,16 @@ const GET_USERS = gql`
   }
 `;
 
-const ADD_USER = gql`
-  mutation AddUser($name: String!, $email: String!) {
-    addUser(name: $name, email: $email) {
-      id
-      name
-      email
-    }
+export const DELETE_USER_MUTATION = gql`
+  mutation DeleteUser($userId: ID!) {
+    deleteUser(userId: $userId)
   }
 `;
 
 const Users = () => {
   const router = useRouter()
   const { loading, error, data } = useQuery(GET_USERS);
+  const [deleteUserMutation] = useMutation(DELETE_USER_MUTATION)
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -36,8 +33,20 @@ const Users = () => {
 
   const onHandleCreateUser = () => router.push("/users/create")
 
+  const onHandleDelete = async (userId: string) => {
+    try {
+      const { data } = await deleteUserMutation({
+        variables: { userId },
+      });
+
+      console.log(data); 
+    } catch (error) {
+      console.log("Ups something went wrong")  
+    }
+  };
+
   return (
-    <ul className='list-disc space-y-4'>
+    <ul className='list-disc space-y-4 w-1/2'>
       <div className='flex items-center justify-between'>
         <p className='text-blue-500 font-semibold my-4'>
           List Users :
@@ -56,14 +65,14 @@ const Users = () => {
              <p><b>Email</b>: {user?.email}</p>
           </div>
 
-          <div className='ml-6'>
+          <div className='ml-6 flex items-center'>
             <button onClick={() =>
               onHandleDetailUser(user.id)
             } className='bg-green-500 border-black text-white border px-4'>
               detail
             </button>
             <button onClick={() =>
-            onHandleDetailUser(user.id)
+            onHandleDelete(user.id)
             } className='bg-red-500 border-black text-white border ml-2 px-4'>
               remove
             </button>

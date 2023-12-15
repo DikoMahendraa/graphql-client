@@ -10,6 +10,7 @@ const GET_USER_DETAIL = gql`
       name
       email
       address
+      religion
       phone
     }
   }
