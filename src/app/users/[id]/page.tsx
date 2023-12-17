@@ -17,8 +17,8 @@ const GET_USER_DETAIL = gql`
 `;
 
 export default function DetailUser() {
-  const pathName = useParams()
   const router = useRouter()
+  const pathName = useParams()
   const userId = pathName?.id as string
 
   const { loading, error, data } = useQuery(GET_USER_DETAIL, {
@@ -27,6 +27,9 @@ export default function DetailUser() {
   });
   
   const onHandleBack = () => router.back()
+
+  const onHandleUpdateUser = () => router.push(`/users/${userId}/update`)
+  
 
   if (error) return <p>Error: {error.message}</p>;
 
@@ -55,6 +58,11 @@ export default function DetailUser() {
           )
         }
           
+          <div className='mt-6'>
+            <button onClick={onHandleUpdateUser} className='bg-blue-400 border border-black capitalize px-4 py-1 w-full'>
+              update user
+            </button>
+          </div>
         </div>
       </div>
     </div>

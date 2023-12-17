@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { FormEvent } from 'react'
 
 
-export const DELETE_USER_MUTATION = gql`
+export const ADD_USER_MUTATION = gql`
 mutation AddUser(
   $name: String,
   $email: String,
@@ -35,7 +35,7 @@ export default function PageCreateUser() {
 
   const router = useRouter()
   const onHandleBack = () => router.back()
-  const [addUser] = useMutation(DELETE_USER_MUTATION)
+  const [addUser] = useMutation(ADD_USER_MUTATION)
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
