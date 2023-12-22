@@ -21,7 +21,16 @@ export default function DetailUser() {
   const pathName = useParams()
   const userId = pathName?.id as string
 
-  const { loading, error, data } = useQuery(GET_USER_DETAIL, {
+  const { loading, error, data } = useQuery<{
+      user: {
+        name: string
+        email: string
+        address: string
+        phone: string
+        religion: string
+      }
+    }>
+    (GET_USER_DETAIL, {
     variables: { id: Number(userId) | 0 },
     fetchPolicy: "no-cache"
   });
@@ -49,11 +58,11 @@ export default function DetailUser() {
             </div>
           ) : (
             <ul className='mt-6 list-disc'>
-              <li><span className='font-semibold'>name:</span> {data.user.name ?? "-"}</li>
-              <li><span className='font-semibold'>email:</span> {data.user.email ?? "-"}</li>
-              <li><span className='font-semibold'>address:</span> {data.user.address ?? "-"}</li>
-              <li><span className='font-semibold'>phone:</span> {data.user.phone ?? "-"}</li>
-              <li><span className='font-semibold'>religion:</span> {data.user.religion ?? "-"}</li>
+              <li><span className='font-semibold'>name:</span> {data?.user?.name ?? "-"}</li>
+              <li><span className='font-semibold'>email:</span> {data?.user?.email ?? "-"}</li>
+              <li><span className='font-semibold'>address:</span> {data?.user?.address ?? "-"}</li>
+              <li><span className='font-semibold'>phone:</span> {data?.user?.phone ?? "-"}</li>
+              <li><span className='font-semibold'>religion:</span> {data?.user?.religion ?? "-"}</li>
             </ul>
           )
         }

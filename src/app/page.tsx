@@ -1,48 +1,21 @@
 "use client"
 
-import { useQuery, gql, useMutation } from '@apollo/client';
 import { useRouter } from 'next/navigation';
-
-const GET_USERS = gql`
-  query {
-    users {
-      id
-      name
-      email
-    }
-  }
-`;
-
-export const DELETE_USER_MUTATION = gql`
-  mutation DeleteUser($userId: ID!) {
-    deleteUser(userId: $userId)
-  }
-`;
+import { useDeleteUserMutation, useUserQuery } from '@/graphql/generated/schema';
 
 const Users = () => {
   const router = useRouter()
-  const { loading, error, data } = useQuery(GET_USERS);
-  const [deleteUserMutation] = useMutation(DELETE_USER_MUTATION)
+  const { loading, error, data, refetch } = useUserQuery();
+  const [deleteUserMutation] = useDeleteUserMutation({
+    onCompleted: () => {
+      refetch()
+    }
+  })
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  const onHandleDetailUser = (id: string) => {
-    router.push(`/users/${id}`)
-  }
-
   const onHandleCreateUser = () => router.push("/users/create")
-
-  const onHandleDelete = async (userId: string) => {
-    try { 
-      return await deleteUserMutation({
-        variables: { userId },
-      });
-
-    } catch (error) {
-      console.log("Ups something went wrong")  
-    }
-  };
 
   return (
     <div className='space-y-4 w-[30rem]'>
@@ -57,22 +30,30 @@ const Users = () => {
       </div>
 
       <div className='space-y-4'>
-        {data.users.map((user: {name: string, email: string, id: string}) => (
-          <div className='flex justify-between items-center' key={user.id}>
+        {data?.users?.map((item) => (
+          <div className='flex justify-between items-center' key={item?.id}>
             <div className='flex flex-col'>
-              <p><b>Name</b>: {user.name}</p>
-              <p><b>Email</b>: {user?.email}</p>
+              <p><b>Name</b>: {item?.name}</p>
+              <p><b>Email</b>: {item?.id}</p>
             </div>
 
             <div className='ml-6 flex items-center'>
-              <button onClick={() =>
-                onHandleDetailUser(user.id)
-              } className='bg-green-500 border-black text-white border px-4'>
+              <button onClick={() => router.push(`/users/${item?.id}`)}
+               className='bg-green-500 border-black text-white border px-4'>
                 detail
               </button>
-              <button onClick={() =>
-              onHandleDelete(user.id)
-              } className='bg-red-500 border-black text-white border ml-2 px-4'>
+              <button onClick={
+                async () => {
+                  try {
+                    const result = await deleteUserMutation({
+                      variables: { userId: String(item?.id) },
+                    });
+                    console.log(result);
+                  } catch (error) {
+                    console.error("Error deleting user:", error);
+                  }
+                }}    
+               className='bg-red-500 border-black text-white border ml-2 px-4'>
                 remove
               </button>
             </div>
